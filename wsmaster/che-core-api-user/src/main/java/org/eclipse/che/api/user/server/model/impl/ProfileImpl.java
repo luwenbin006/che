@@ -12,6 +12,14 @@ package org.eclipse.che.api.user.server.model.impl;
 
 import org.eclipse.che.api.core.model.user.Profile;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.UniqueConstraint;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -21,17 +29,27 @@ import java.util.Objects;
  *
  * @author Yevhenii Voevodin
  */
+@Entity(name = "Profile")
 public class ProfileImpl implements Profile {
 
-    private String              id;
+    @Id
+    private String userId;
+
+    @ElementCollection
+    @MapKeyColumn(name = "name")
+    @Column(name = "value")
+    @CollectionTable(joinColumns = @JoinColumn(name = "user_id"),
+                     uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "name"}))
     private Map<String, String> attributes;
 
-    public ProfileImpl(String id) {
-        this.id = id;
+    public ProfileImpl() {}
+
+    public ProfileImpl(String userId) {
+        this.userId = userId;
     }
 
-    public ProfileImpl(String id, Map<String, String> attributes) {
-        this.id = id;
+    public ProfileImpl(String userId, Map<String, String> attributes) {
+        this.userId = userId;
         if (attributes != null) {
             this.attributes = new HashMap<>(attributes);
         }
@@ -43,7 +61,11 @@ public class ProfileImpl implements Profile {
 
     @Override
     public String getUserId() {
-        return id;
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -67,13 +89,13 @@ public class ProfileImpl implements Profile {
             return false;
         }
         final ProfileImpl that = (ProfileImpl)obj;
-        return Objects.equals(id, that.id) && getAttributes().equals(that.getAttributes());
+        return Objects.equals(userId, that.userId) && getAttributes().equals(that.getAttributes());
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + Objects.hashCode(id);
+        hash = 31 * hash + Objects.hashCode(userId);
         hash = 31 * hash + getAttributes().hashCode();
         return hash;
     }
@@ -81,7 +103,7 @@ public class ProfileImpl implements Profile {
     @Override
     public String toString() {
         return "ProfileImpl{" +
-               "id='" + id + '\'' +
+               "userId='" + userId + '\'' +
                ", attributes=" + attributes +
                '}';
     }
