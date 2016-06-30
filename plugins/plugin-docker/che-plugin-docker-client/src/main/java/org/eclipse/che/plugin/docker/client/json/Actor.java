@@ -13,7 +13,17 @@ package org.eclipse.che.plugin.docker.client.json;
 import java.util.Map;
 
 /**
- * Represents Actor field of {@link Event}.
+ * Represents Actor field of {@link Event}.<br/>
+ * Json example:
+ * <pre>  {
+ *    "ID": "1234567890abcdef",
+ *    "Attributes": {
+ *       "com.example.some-label": "some-label-value",
+ *       "image": "some-image",
+ *       "name": "some-container"
+ *    }
+ * }
+ * </pre>
  *
  * @author Mykola Morhun
  */

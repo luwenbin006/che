@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.che.plugin.docker.client.json;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Docker event.
  *
@@ -20,8 +22,11 @@ public class Event {
     private String status;
     private String id;
     private String from;
+    @SerializedName("Type")
     private String type;
+    @SerializedName("Action")
     private String action;
+    @SerializedName("Actor")
     private Actor  actor;
     private long   time;
     private long   timeNano;
