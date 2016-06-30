@@ -169,6 +169,11 @@ public class PartStackViewImpl extends ResizeComposite implements PartStackView,
         }
     }
 
+    @Override
+    public AcceptsOneWidget getContainer() {
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void updateTabItem(@NotNull PartPresenter partPresenter) {

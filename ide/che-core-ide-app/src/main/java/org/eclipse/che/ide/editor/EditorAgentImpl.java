@@ -71,6 +71,7 @@ import java.util.List;
 import static org.eclipse.che.ide.api.event.FileEvent.FileOperation.CLOSE;
 import static org.eclipse.che.ide.api.notification.StatusNotification.DisplayMode.FLOAT_MODE;
 import static org.eclipse.che.ide.api.parts.PartStackType.EDITING;
+import static org.eclipse.che.ide.api.parts.PartStackType.MULTI_EDITING;
 
 /** @author Evgen Vidolob */
 @Singleton
@@ -304,7 +305,7 @@ public class EditorAgentImpl implements EditorAgent {
     private void doOpen(final VirtualFile file, final OpenEditorCallback callback) {
         EditorPartPresenter openedEditor = getOpenedEditor(Path.valueOf(file.getPath()));
         if (openedEditor != null) {
-            workspace.setActivePart(openedEditor, EDITING);
+            workspace.setActivePart(openedEditor, MULTI_EDITING);
             callback.onEditorActivated(openedEditor);
         } else {
             FileType fileType = fileTypeRegistry.getFileTypeByFile(file);
@@ -314,7 +315,7 @@ public class EditorAgentImpl implements EditorAgent {
             editor.init(new EditorInputImpl(fileType, file), callback);
             editor.addCloseHandler(editorClosed);
 
-            workspace.openPart(editor, EDITING);
+            workspace.openPart(editor, MULTI_EDITING);
             openedEditors.add(editor);
 
             workspace.setActivePart(editor);

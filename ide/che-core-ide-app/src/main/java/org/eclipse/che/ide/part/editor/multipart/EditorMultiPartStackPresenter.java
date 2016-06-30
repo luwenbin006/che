@@ -8,7 +8,7 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.part.editor;
+package org.eclipse.che.ide.part.editor.multipart;
 
 import com.google.common.base.Predicate;
 import com.google.gwt.core.client.Scheduler;
@@ -30,6 +30,8 @@ import org.eclipse.che.ide.api.parts.PropertyListener;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.part.PartStackPresenter;
 import org.eclipse.che.ide.part.PartsComparator;
+import org.eclipse.che.ide.part.editor.EditorPartStackFactory;
+import org.eclipse.che.ide.part.editor.EditorPartStackView;
 import org.eclipse.che.ide.part.editor.event.CloseNonPinnedEditorsEvent;
 import org.eclipse.che.ide.part.editor.event.CloseNonPinnedEditorsEvent.CloseNonPinnedEditorsHandler;
 import org.eclipse.che.ide.part.editor.event.PinEditorTabEvent;
@@ -61,14 +63,15 @@ import static org.eclipse.che.ide.api.event.FileEvent.FileOperation.CLOSE;
  * @author Dmitry Shnurenko
  * @author Vlad Zhukovskyi
  */
-
-public class EditorPartStackPresenter extends PartStackPresenter implements EditorPartStack,
+@Singleton
+public class EditorMultiPartStackPresenter extends PartStackPresenter implements EditorPartStack,
                                                                             EditorTab.ActionDelegate,
                                                                             ListButton.ActionDelegate,
                                                                             PinEditorTabEventHandler,
                                                                             CloseNonPinnedEditorsHandler {
 
-    private final EventBus   eventBus;
+    private final EventBus               eventBus;
+    private final EditorPartStackFactory editorPartStackFactory;
     private final ListButton listButton;
 
     private final Map<ListItem, TabItem> items;
@@ -79,15 +82,17 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
     private PartPresenter activePart;
 
     @Inject
-    public EditorPartStackPresenter(EditorPartStackView view,
-                                    PartsComparator partsComparator,
-                                    EventBus eventBus,
-                                    TabItemFactory tabItemFactory,
-                                    PartStackEventHandler partStackEventHandler,
-                                    ListButton listButton) {
+    public EditorMultiPartStackPresenter(EditorMultiPartStackView view,
+                                         PartsComparator partsComparator,
+                                         EventBus eventBus,
+                                         EditorPartStackFactory editorPartStackFactory,
+                                         TabItemFactory tabItemFactory,
+                                         PartStackEventHandler partStackEventHandler,
+                                         ListButton listButton) {
         //noinspection ConstantConditions
         super(eventBus, partStackEventHandler, tabItemFactory, partsComparator, view, null);
         this.eventBus = eventBus;
+        this.editorPartStackFactory = editorPartStackFactory;
 
         this.listButton = listButton;
         this.listButton.setDelegate(this);
@@ -129,54 +134,12 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
     /** {@inheritDoc} */
     @Override
     public void addPart(@NotNull PartPresenter part) {
-        if (!containsPart(part)) {
-            part.addPropertyListener(propertyListener);
+        Log.error(getClass(), "///// add part");
+        EditorPartStack editorPartStack = editorPartStackFactory.create();
+        Log.error(getClass(), "///// editor part stack " + editorPartStack.hashCode());
+        editorPartStack.go(view.getContainer());
 
-            VirtualFile file = part instanceof AbstractEditorPresenter ? ((AbstractEditorPresenter)part).getEditorInput().getFile()
-                                                                       : null;
-
-            final EditorTab editorTab = tabItemFactory.createEditorPartButton(file, part.getTitleImage(), part.getTitle());
-
-            part.addPropertyListener(new PropertyListener() {
-                @Override
-                public void propertyChanged(PartPresenter source, int propId) {
-                    if (propId == EditorPartPresenter.PROP_INPUT && source instanceof EditorPartPresenter) {
-                        editorTab.setReadOnlyMark(((EditorPartPresenter)source).getEditorInput().getFile().isReadOnly());
-                    }
-                }
-            });
-
-            editorTab.setDelegate(this);
-
-            parts.put(editorTab, part);
-            partsOrder.add(part);
-
-            view.addTab(editorTab, part);
-
-            TabItem tabItem = getTabByPart(part);
-
-            if (tabItem != null) {
-                ListItem item = new ListItemWidget(tabItem);
-                listButton.addListItem(item);
-                items.put(item, tabItem);
-            }
-
-            if (part instanceof EditorWithErrors) {
-                final EditorWithErrors presenter = ((EditorWithErrors)part);
-
-                part.addPropertyListener(new PropertyListener() {
-                    @Override
-                    public void propertyChanged(PartPresenter source, int propId) {
-                        EditorState editorState = presenter.getErrorState();
-
-                        editorTab.setErrorMark(ERROR.equals(editorState));
-                        editorTab.setWarningMark(WARNING.equals(editorState));
-                    }
-                });
-            }
-        }
-
-        view.selectTab(part);
+        editorPartStack.addPart(part);
     }
 
     /** {@inheritDoc} */
@@ -214,7 +177,7 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
         listButton.removeListItem(listItem);
         items.remove(listItem);
 
-        eventBus.fireEvent(new FileEvent(((EditorTab) tab).getFile(), CLOSE));
+        eventBus.fireEvent(new FileEvent(((EditorTab)tab).getFile(), CLOSE));
     }
 
     /** {@inheritDoc} */

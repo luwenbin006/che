@@ -8,7 +8,7 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.part.editor;
+package org.eclipse.che.ide.part.editor.multipart;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
@@ -46,9 +47,9 @@ import static com.google.gwt.dom.client.Style.Unit.PCT;
  * @author Dmitry Shnurenko
  * @author Vitaliy Guliy
  */
-public class EditorPartStackView extends ResizeComposite implements PartStackView, MouseDownHandler {
+public class EditorMultiPartStackView extends ResizeComposite implements PartStackView, MouseDownHandler {
 
-    interface PartStackUiBinder extends UiBinder<Widget, EditorPartStackView> {
+    interface PartStackUiBinder extends UiBinder<Widget, EditorMultiPartStackView> {
     }
 
     private static final PartStackUiBinder UI_BINDER = GWT.create(PartStackUiBinder.class);
@@ -57,10 +58,10 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
     DockLayoutPanel parent;
 
     @UiField
-    FlowPanel       tabsPanel;
+    FlowPanel tabsPanel;
 
     @UiField
-    DeckLayoutPanel contentPanel;
+    SplitLayoutPanel contentPanel;
 
     private final Map<PartPresenter, TabItem> tabs;
     private final AcceptsOneWidget            partViewContainer;
@@ -72,7 +73,7 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
     private TabItem        activeTab;
 
     @Inject
-    public EditorPartStackView(PartStackUIResources resources) {
+    public EditorMultiPartStackView(PartStackUIResources resources) {
         this.resources = resources;
         this.tabs = new HashMap<>();
         this.contents = new LinkedList<>();
@@ -82,7 +83,7 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
         partViewContainer = new AcceptsOneWidget() {
             @Override
             public void setWidget(IsWidget widget) {
-                contentPanel.add(widget);
+                contentPanel.addWest(widget, 300);
             }
         };
         Log.error(getClass(), "=== Constructor View ");
@@ -138,6 +139,10 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
         tabs.put(partPresenter, tabItem);
         contents.add(partPresenter);
         partPresenter.go(partViewContainer);
+    }
+
+    public AcceptsOneWidget getContainer() {
+        return partViewContainer;
     }
 
     /**
@@ -221,7 +226,7 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
             viewIndex = contentPanel.getWidgetIndex(view);
         }
 
-        contentPanel.showWidget(viewIndex);
+//        contentPanel.showWidget(viewIndex);
         setActiveTab(partPresenter);
     }
 
@@ -261,11 +266,6 @@ public class EditorPartStackView extends ResizeComposite implements PartStackVie
         } else {
             activeTab.unSelect();
         }
-    }
-
-    @Override
-    public AcceptsOneWidget getContainer() {
-        return null;
     }
 
     /** {@inheritDoc} */

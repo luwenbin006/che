@@ -11,6 +11,7 @@
 package org.eclipse.che.ide.api.parts;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -82,6 +83,8 @@ public interface PartStackView extends View<PartStackView.ActionDelegate> {
 
     /** Set PartStack focused */
     void setFocus(boolean focused);
+
+    AcceptsOneWidget getContainer();
 
     /** Update Tab */
     void updateTabItem(@NotNull PartPresenter partPresenter);

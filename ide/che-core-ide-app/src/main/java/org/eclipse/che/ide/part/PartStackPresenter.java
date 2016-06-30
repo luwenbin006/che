@@ -28,6 +28,7 @@ import org.eclipse.che.ide.api.parts.PropertyListener;
 import org.eclipse.che.ide.api.parts.base.BasePresenter;
 import org.eclipse.che.ide.part.widgets.TabItemFactory;
 import org.eclipse.che.ide.part.widgets.partbutton.PartButton;
+import org.eclipse.che.ide.util.loging.Log;
 import org.eclipse.che.ide.workspace.WorkBenchPartController;
 
 import javax.validation.constraints.NotNull;
@@ -130,6 +131,7 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
     /** {@inheritDoc} */
     @Override
     public void addPart(@NotNull PartPresenter part, @Nullable Constraints constraint) {
+        Log.error(getClass(), "***************** add part " + part.getClass());
         if (containsPart(part)) {
             workBenchPartController.setHidden(true);
 
