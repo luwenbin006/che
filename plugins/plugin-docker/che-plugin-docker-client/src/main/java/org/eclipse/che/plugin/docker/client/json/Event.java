@@ -14,11 +14,15 @@ package org.eclipse.che.plugin.docker.client.json;
  * Docker event.
  *
  * @author Alexander Garagatyi
+ * @author Mykola Morhun
  */
 public class Event {
     private String status;
     private String id;
     private String from;
+    private String Type;
+    private String Action;
+    private Actor  Actor;
     private long   time;
     private long   timeNano;
 
@@ -36,6 +40,18 @@ public class Event {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getType() {
+        return Type;
+    }
+
+    public String getAction() {
+        return Action;
+    }
+
+    public org.eclipse.che.plugin.docker.client.json.Actor getActor() {
+        return Actor;
     }
 
     public long getTimeNano() {
@@ -57,6 +73,21 @@ public class Event {
         return this;
     }
 
+    public Event withType(String type) {
+        this.Type = type;
+        return this;
+    }
+
+    public Event withAction(String action) {
+        this.Action = action;
+        return this;
+    }
+
+    public Event withActor(Actor actor) {
+        this.Actor = actor;
+        return this;
+    }
+
     public Event withTime(long time) {
         this.time = time;
         return this;
@@ -73,6 +104,9 @@ public class Event {
                "status='" + status + '\'' +
                ", id='" + id + '\'' +
                ", from='" + from + '\'' +
+               ", Type='" + Type + '\'' +
+               ", Action='" + Action + '\'' +
+               ", Actor='" + Actor + '\'' +
                ", time=" + time +
                ", timeNano=" + timeNano +
                '}';
