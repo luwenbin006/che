@@ -20,9 +20,9 @@ public class Event {
     private String status;
     private String id;
     private String from;
-    private String Type;
-    private String Action;
-    private Actor  Actor;
+    private String type;
+    private String action;
+    private Actor  actor;
     private long   time;
     private long   timeNano;
 
@@ -43,15 +43,15 @@ public class Event {
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public String getAction() {
-        return Action;
+        return action;
     }
 
-    public org.eclipse.che.plugin.docker.client.json.Actor getActor() {
-        return Actor;
+    public Actor getActor() {
+        return actor;
     }
 
     public long getTimeNano() {
@@ -74,17 +74,17 @@ public class Event {
     }
 
     public Event withType(String type) {
-        this.Type = type;
+        this.type = type;
         return this;
     }
 
     public Event withAction(String action) {
-        this.Action = action;
+        this.action = action;
         return this;
     }
 
     public Event withActor(Actor actor) {
-        this.Actor = actor;
+        this.actor = actor;
         return this;
     }
 
@@ -104,9 +104,9 @@ public class Event {
                "status='" + status + '\'' +
                ", id='" + id + '\'' +
                ", from='" + from + '\'' +
-               ", Type='" + Type + '\'' +
-               ", Action='" + Action + '\'' +
-               ", Actor='" + Actor + '\'' +
+               ", type='" + type + '\'' +
+               ", action='" + action + '\'' +
+               ", actor='" + actor + '\'' +
                ", time=" + time +
                ", timeNano=" + timeNano +
                '}';

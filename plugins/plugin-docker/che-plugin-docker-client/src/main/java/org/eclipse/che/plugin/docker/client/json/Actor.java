@@ -18,32 +18,32 @@ import java.util.Map;
  * @author Mykola Morhun
  */
 public class Actor {
-    private String ID;
-    Map<String,String> Attributes;
+    private String             id;
+    private Map<String,String> attributes;
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public Map<String, String> getAttributes() {
-        return Attributes;
+        return attributes;
     }
 
-    public Actor withID(String id) {
-        this.ID = id;
+    public Actor withId(String id) {
+        this.id = id;
         return this;
     }
 
     public Actor withAttributes(Map<String, String> attributes) {
-        this.Attributes = attributes;
+        this.attributes = attributes;
         return this;
     }
 
     @Override
     public String toString() {
         return "Actor{" +
-               "ID='" + ID + '\'' +
-               ", Attributes=" + Attributes +
+               "id='" + id + '\'' +
+               ", attributes=" + attributes +
                '}';
     }
 
